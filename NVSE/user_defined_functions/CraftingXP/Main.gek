@@ -1,0 +1,58 @@
+float fXPMult
+float fItemsCrafted
+ref rCraftingRecipe
+ref rRecipeSubcategory
+
+ref	rItemForm
+int	iQuantity
+
+begin Function {rItemForm, iQuantity}
+	
+	rCraftingRecipe = GetRecipeMenuSelection
+	rRecipeSubcategory = GetRecipeSubcategory rCraftingRecipe
+	fItemsCrafted = (GetPCMiscStat "Items Crafted") - (Goo1.AuxVarGetFlt "*CraftXPStat")
+	Goo1.AuxVarSetFlt "*CraftXPStat" (GetPCMiscStat "Items Crafted")
+	if HasKeyword rCraftingRecipe "CraftingXPBlacklist" == 0 && HasKeyword (GetRecipeCategory rCraftingRecipe) "CraftingXPBlacklist" == 0 && HasKeyword rRecipeSubcategory "CraftingXPBlacklist" == 0
+		if Goo1.AuxVarGetFlt "*CraftXPCalc" == 1
+			RewardXP (iQuantity * (GetValueAlt rItemForm) * (Goo1.AuxVarGetFlt "*CraftXPCalc" 1))
+		elseif fItemsCrafted > 0
+			Goo1.AuxVarSetFlt "*CraftXPStat" (GetPCMiscStat "Items Crafted")
+			if eval IsModLoaded "Supplemental Ammo Crafting.esp"
+				if rRecipeSubcategory == (EditorIDToFormID "PistolAmmoSubRecipes")
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 6
+				elseif rRecipeSubcategory == (EditorIDToFormID "RifleAmmoSubRecipes")
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 7
+				elseif rRecipeSubcategory == (EditorIDToFormID "ShotgunAmmoSubRecipes")
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 8
+				elseif rRecipeSubcategory == AidSubRecipes || rRecipeSubcategory == ChemsSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 0
+				elseif rRecipeSubcategory == AmmoSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 1
+				elseif rRecipeSubcategory == BreakdownSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 2
+				elseif rRecipeSubcategory == FoodSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 3
+				elseif rRecipeSubcategory == WeaponSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 4
+				else
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 5
+				endif
+			else
+				if rRecipeSubcategory == AidSubRecipes || rRecipeSubcategory == ChemsSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 0
+				elseif rRecipeSubcategory == AmmoSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 1
+				elseif rRecipeSubcategory == BreakdownSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 2
+				elseif rRecipeSubcategory == FoodSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 3
+				elseif rRecipeSubcategory == WeaponSubRecipes
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 4
+				else
+					fXPMult = Goo1.AuxVarGetFlt "*CraftXPMul" 5
+				endif
+			endif
+			RewardXP (fXPMult * fItemsCrafted)
+		endif
+	endif
+end

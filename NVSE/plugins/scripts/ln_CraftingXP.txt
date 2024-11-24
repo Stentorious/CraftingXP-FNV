@@ -1,0 +1,90 @@
+; Crafting XP - Stentorious
+
+if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 2
+else
+   MessageBoxEx "Crafting XP missing requirement!%rInstall xNVSE 6.3.3+."
+   return
+endif
+if GetPluginVersion "JohnnyGuitarNVSE" < 250
+	MessageBoxEx "Crafting XP missing requirement!%rInstall latest JohnnyGuitar NVSE."
+	return
+endif
+
+if Goo1.AuxVarGetFlt "*CraftXP_Init" != 1
+
+	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fAid" "CraftingXP.ini")) 0
+	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fAmmo" "CraftingXP.ini")) 1
+	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fBreakdown" "CraftingXP.ini")) 2
+	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fFood" "CraftingXP.ini")) 3
+	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fWeapon" "CraftingXP.ini")) 4
+	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fMisc" "CraftingXP.ini")) 5
+	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "SupplementalAmmoCrafting:fAmmoPistol" "CraftingXP.ini")) 6
+	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "SupplementalAmmoCrafting:fAmmoRifle" "CraftingXP.ini")) 7
+	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "SupplementalAmmoCrafting:fAmmoShotgun" "CraftingXP.ini")) 8
+
+
+	if eval IsModLoaded "DeadMoney.esm"
+		AssignKeyword (EditorIDToFormID "NVDLC01VendingMachineRecipes") "CraftingXPBlacklist"
+	endif
+
+
+	if eval IsModLoaded "TaleOfTwoWastelands.esm"
+		AssignKeyword (EditorIDToFormID "TTWAmmoPressRecipes") "CraftingXPBlacklist"
+	endif
+
+
+	if GetINIFloat "General:bAntiExploit" "CraftingXP.ini" == 1
+
+		AssignKeyword RecipeConversionSECtoECP "CraftingXPBlacklist"
+		AssignKeyword RecipeConversionSECtoMFC "CraftingXPBlacklist"
+		AssignKeyword RecipeConversionMFCtoSEC "CraftingXPBlacklist"
+		AssignKeyword RecipeConversionMFCtoECP "CraftingXPBlacklist"
+		AssignKeyword RecipeConversionECPtoSEC "CraftingXPBlacklist"
+		AssignKeyword RecipeConversionECPtoMFC "CraftingXPBlacklist"
+
+		if eval IsModLoaded "LonesomeRoad.esm"
+			AssignKeyword (EditorIDToFormID "RecipeNVDLC04ConversionMissileToRocket") "CraftingXPBlacklist"
+		endif
+
+		if eval IsModLoaded "Supplemental Ammo Crafting.esp"
+			AssignKeyword (EditorIDToFormID "RecipeBB") "CraftingXPBlacklist"
+			AssignKeyword (EditorIDToFormID "RecipeBreakdownBB") "CraftingXPBlacklist"
+		endif
+
+		if eval IsModLoaded "JSawyer Ultimate.esp"
+			AssignKeyword (EditorIDToFormID "NVJSawyerTinCanWorkbenchRcp") "CraftingXPBlacklist"
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerThawNukaRcp") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerThawSSRcp") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerBreakdownRepairKitArmorRcp") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerBreakdownRepairKitDummyRcp") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerBreakdownRepairKitWeaponRcp") 1000
+		endif
+
+		if eval (IsModLoaded "sawyerbatty.esp" || IsModLoaded "Lone Star.esm")
+			AssignKeyword (EditorIDToFormID "JSawyerRecipeTinCan") "CraftingXPBlacklist"
+		endif
+
+		if eval IsModLoaded "Aid Addon.esp"
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedkitSmallBreakdown") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedkitMediumBreakdown") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedkitLargeBreakdown") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedKitImpBreakdown") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedKitSurvivalBreakdown") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedkitUltraBreakdown") 1000
+			SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeDoctorsBagBreakdown") 1000
+		endif
+
+	endif
+
+	if GetINIFloat "General:bValueBasedXP" "CraftingXP.ini" == 1
+		Goo1.AuxVarSetFlt "*CraftXPCalc" 1
+		Goo1.AuxVarSetFlt "*CraftXPCalc" (GetMaxOf 0 (GetINIFloat "General:fValueBasedXPMul" "CraftingXP.ini")) 1
+	else
+		SetOnMenuOpenEventHandler ({int stL1} => Goo1.AuxVarSetFlt "*CraftXPStat" (GetPCMiscStat "Items Crafted")) 1 1077
+	endif
+
+	SetOnCraftingEventHandler (CompileScript "CraftingXP/Main.gek") 1
+
+	Goo1.AuxVarSetFlt "*CraftXP_Init" 1
+
+endif
