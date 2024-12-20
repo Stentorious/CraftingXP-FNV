@@ -1,33 +1,21 @@
 ; Crafting XP - Stentorious
 
-if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 2
-else
-   MessageBoxEx "Crafting XP missing requirement!%rInstall xNVSE 6.3.3+."
-   return
-endif
-if GetPluginVersion "JohnnyGuitarNVSE" < 250
-	MessageBoxEx "Crafting XP missing requirement!%rInstall latest JohnnyGuitar NVSE."
-	return
-endif
-
 if Goo1.AuxVarGetFlt "*CraftXP_Init" != 1
+	Goo1.AuxVarSetFlt "*CraftXP_Init" 1
 
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fAid" "CraftingXP.ini")) 0
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fAmmo" "CraftingXP.ini")) 1
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fBreakdown" "CraftingXP.ini")) 2
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fFood" "CraftingXP.ini")) 3
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fWeapon" "CraftingXP.ini")) 4
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fMisc" "CraftingXP.ini")) 5
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "SupplementalAmmoCrafting:fAmmoPistol" "CraftingXP.ini")) 6
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "SupplementalAmmoCrafting:fAmmoRifle" "CraftingXP.ini")) 7
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "SupplementalAmmoCrafting:fAmmoShotgun" "CraftingXP.ini")) 8
-
+	if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 2
+	else
+	   MessageBoxEx "Crafting XP missing requirement!%rInstall xNVSE 6.3.3+."
+	   return
+	endif
+	if GetPluginVersion "JohnnyGuitarNVSE" < 250
+		MessageBoxEx "Crafting XP missing requirement!%rInstall latest JohnnyGuitar NVSE."
+		return
+	endif
 
 	if eval IsModLoaded "DeadMoney.esm"
 		AssignKeyword (EditorIDToFormID "NVDLC01VendingMachineRecipes") "CraftingXPBlacklist"
 	endif
-
-
 	if eval IsModLoaded "TaleOfTwoWastelands.esm"
 		AssignKeyword (EditorIDToFormID "TTWAmmoPressRecipes") "CraftingXPBlacklist"
 	endif
@@ -60,7 +48,7 @@ if Goo1.AuxVarGetFlt "*CraftXP_Init" != 1
 			SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerBreakdownRepairKitWeaponRcp") 1000
 		endif
 
-		if eval (IsModLoaded "sawyerbatty.esp" || IsModLoaded "Lone Star.esm")
+		if eval (IsModLoaded "sawyerbatty.esp" || IsModLoaded "Vigor.esp" || IsModLoaded "Lone Star.esm")
 			AssignKeyword (EditorIDToFormID "JSawyerRecipeTinCan") "CraftingXPBlacklist"
 		endif
 
@@ -80,11 +68,18 @@ if Goo1.AuxVarGetFlt "*CraftXP_Init" != 1
 		Goo1.AuxVarSetFlt "*CraftXPCalc" 1
 		Goo1.AuxVarSetFlt "*CraftXPCalc" (GetMaxOf 0 (GetINIFloat "General:fValueBasedXPMul" "CraftingXP.ini")) 1
 	else
-		SetOnMenuOpenEventHandler ({int stL1} => Goo1.AuxVarSetFlt "*CraftXPStat" (GetPCMiscStat "Items Crafted")) 1 1077
+		Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fAid" "CraftingXP.ini")) 0
+		Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fAmmo" "CraftingXP.ini")) 1
+		Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fBreakdown" "CraftingXP.ini")) 2
+		Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fFood" "CraftingXP.ini")) 3
+		Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fWeapon" "CraftingXP.ini")) 4
+		Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "Crafting:fMisc" "CraftingXP.ini")) 5
+		Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "SupplementalAmmoCrafting:fAmmoPistol" "CraftingXP.ini")) 6
+		Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "SupplementalAmmoCrafting:fAmmoRifle" "CraftingXP.ini")) 7
+		Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat "SupplementalAmmoCrafting:fAmmoShotgun" "CraftingXP.ini")) 8
+		SetOnMenuOpenEventHandler ({int iMenuID} => Goo1.AuxVarSetFlt "*CraftXPStat" (GetPCMiscStat "Items Crafted")) 1 1077
 	endif
 
 	SetOnCraftingEventHandler (CompileScript "CraftingXP/Main.gek") 1
-
-	Goo1.AuxVarSetFlt "*CraftXP_Init" 1
 
 endif
