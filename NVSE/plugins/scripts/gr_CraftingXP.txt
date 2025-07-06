@@ -1,13 +1,8 @@
 ; Crafting XP - Stentorious
 
-if eval Goo1.AuxVarGetFlt "*CraftXP_Init"
-	return
-endif
-Goo1.AuxVarSetFlt "*CraftXP_Init" 1
-
-if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 9
-else
-   MessageBoxEx "Crafting XP missing requirement!%rInstall xNVSE 6.3.10+."
+; Requirements check
+if eval GetNVSEVersion < 6 || (GetNVSEVersion == 6 && GetNVSERevision < 4)
+   MessageBoxEx "Crafting XP missing requirement!%rInstall xNVSE 6.4.0+."
    return
 endif
 if GetPluginVersion "JohnnyGuitarNVSE" < 250
@@ -26,7 +21,7 @@ if eval IsModLoaded "TaleOfTwoWastelands.esm"
 endif
 
 ; Anti exploit
-if eval GetINIFloat_Cached "General:bAntiExploit" "Stentorious\CraftingXP.ini" == 1
+if eval GetINIFloat_Cached "General:bAntiExploit" "Stentorious\CraftingXP.ini"
 
 	AssignKeyword RecipeConversionSECtoECP "CraftingXPBlacklist"
 	AssignKeyword RecipeConversionSECtoMFC "CraftingXPBlacklist"
@@ -65,24 +60,36 @@ if eval GetINIFloat_Cached "General:bAntiExploit" "Stentorious\CraftingXP.ini" =
 
 endif
 
-if eval GetINIFloat_Cached "General:bValueBasedXP" "Stentorious\CraftingXP.ini" == 1
-	Goo1.AuxVarSetFlt "*CraftXPCalc" 1
-	Goo1.AuxVarSetFlt "*CraftXPCalc" (GetMaxOf 0 (GetINIFloat_Cached "General:fValueBasedXPMul" "Stentorious\CraftingXP.ini")) 1
+Goo1.AuxVarSetFlt "*CraftXP_INI" (eval GetINIFloat_Cached "General:bValueBasedXP" "Stentorious\CraftingXP.ini") 0
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (Floor (GetINIFloat_Cached "General:iMinimumXP" "Stentorious\CraftingXP.ini"))) 1
+if eval Goo1.AuxVarGetFlt "*CraftXP_INI" 0
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "General:fValueBasedXPMul" "Stentorious\CraftingXP.ini")) 2
 else
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAid" "Stentorious\CraftingXP.ini")) 0
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAmmo" "Stentorious\CraftingXP.ini")) 1
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fBreakdown" "Stentorious\CraftingXP.ini")) 2
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fFood" "Stentorious\CraftingXP.ini")) 3
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fWeapon" "Stentorious\CraftingXP.ini")) 4
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fMisc" "Stentorious\CraftingXP.ini")) 5
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat_Cached "SupplementalAmmoCrafting:fAmmoPistol" "Stentorious\CraftingXP.ini")) 6
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat_Cached "SupplementalAmmoCrafting:fAmmoRifle" "Stentorious\CraftingXP.ini")) 7
-	Goo1.AuxVarSetFlt "*CraftXPMul" (GetMaxOf 0 (GetINIFloat_Cached "SupplementalAmmoCrafting:fAmmoShotgun" "Stentorious\CraftingXP.ini")) 8
-	SetOnMenuOpenEventHandler ({int iMenuID} => Goo1.AuxVarSetFlt "*CraftXPStat" (GetPCMiscStat "Items Crafted")) 1 1077
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAid" "Stentorious\CraftingXP.ini")) 2
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAmmo" "Stentorious\CraftingXP.ini")) 3
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fBreakdown" "Stentorious\CraftingXP.ini")) 4
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fFood" "Stentorious\CraftingXP.ini")) 5
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fWeapon" "Stentorious\CraftingXP.ini")) 6
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fMisc" "Stentorious\CraftingXP.ini")) 7
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "SupplementalAmmoCrafting:fAmmoPistol" "Stentorious\CraftingXP.ini")) 8
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "SupplementalAmmoCrafting:fAmmoRifle" "Stentorious\CraftingXP.ini")) 9
+	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "SupplementalAmmoCrafting:fAmmoShotgun" "Stentorious\CraftingXP.ini")) 10
 endif
 
 ; Clear INI cache
 CloseFileSO "Stentorious\CraftingXP.ini" 0
 
-; Crafting event handler
+; Event handlers
 SetOnCraftingEventHandler (CompileScript "CraftingXP/Main.gek") 1
+SetOnMenuOpenEventHandler (begin function {int iMenuID}
+	if eval GetActiveMenuMode != iMenuID
+		return
+	endif
+	Goo1.AuxVarSetFlt "*CraftXP_Stat" (GetPCMiscStat "Items Crafted") 0
+	Goo1.AuxVarSetFlt "*CraftXP_Stat" 0 1
+end) 1 1077
+SetOnMenuCloseEventHandler (begin function {int iMenuID}
+	if eval Goo1.AuxVarGetFlt "*CraftXP_Stat" 1 > 0
+		RewardXP (GetMaxOf (Goo1.AuxVarGetFlt "*CraftXP_INI" 1) (Flr ((Goo1.AuxVarGetFlt "*CraftXP_Stat" 1) + 0.5)))
+	endif
+end) 1 1077
