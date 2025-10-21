@@ -55,7 +55,31 @@ if eval (IsModLoaded "sawyerbatty.esp" || IsModLoaded "Vigor.esp" || IsModLoaded
 	AssignKeyword (EditorIDToFormID "JSawyerRecipeTinCan") "CraftingXPExploit"
 endif
 if eval IsModLoaded "JSawyer Ultimate.esp"
+	AssignKeyword RecipeNukaColaIceCold "CraftingXPExploit"
+	AssignKeyword RecipeWeaponRepairKit "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "NVJSawyerArmorRepairKitRcp") "CraftingXPExploit"
 	AssignKeyword (EditorIDToFormID "NVJSawyerTinCanWorkbenchRcp") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "NVJSawyerThawNukaRcp") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "NVJSawyerThawSSRcp") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "NVJSawyerBreakdownRepairKitArmorRcp") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "NVJSawyerBreakdownRepairKitDummyRcp") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "NVJSawyerBreakdownRepairKitWeaponRcp") "CraftingXPExploit"
+endif
+if eval IsModLoaded "Aid Addon.esp"
+	AssignKeyword RecipeDoctorsBag "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedkitSmall") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedkitMedium") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedkitLarge") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedKitImp") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedKitSurvival") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedkitUltra") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeDoctorsBagBreakdown") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedkitSmallBreakdown") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedkitMediumBreakdown") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedkitLargeBreakdown") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedKitImpBreakdown") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedKitSurvivalBreakdown") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeMedkitUltraBreakdown") "CraftingXPExploit"
 endif
 
 ; Event handlers
@@ -72,15 +96,3 @@ SetOnMenuCloseEventHandler (begin function {int iMenuID}
 		RewardXP (GetMaxOf (Goo1.AuxVarGetFlt "*CraftXP_INI" 1) (Flr ((Goo1.AuxVarGetFlt "*CraftXP_Stat" 1) + 0.5)))
 	endif
 end) 1 1077
-
-; Disable recipes
-if eval IsModLoaded "JSawyer Ultimate.esp" == 0 && IsModLoaded "Aid Addon.esp" == 0
-	return
-endif
-Call (CompileScript "CraftingXP/UpdateAntiExploit.gek")
-SetEventHandler "MCMExtUpdate" (begin Function {array_var aTemp}
-	if eval (Ar_Find "CraftingXP" aTemp) != Ar_BadNumericIndex
-		Call (CompileScript "CraftingXP\UpdateAntiExploit.gek")
-	endif
-	aTemp = ar_Null
-end)
