@@ -18,36 +18,37 @@ begin Function {rItem, iQuantity}
 		return
 	endif
 
+	; Check recipe exploit
+	if eval Goo1.AuxVarGetFlt "*CraftXP_INI" 2 && (HasKeyword rRecipe "CraftingXPExploit" || HasKeyword (GetRecipeCategory rRecipe) "CraftingXPExploit" || HasKeyword rSubcategory "CraftingXPExploit")
+		return
+	endif
+
 	; Value based XP
 	if eval Goo1.AuxVarGetFlt "*CraftXP_INI" 0
-		Goo1.AuxVarSetFlt "*CraftXP_Stat" ((iQuantity * (GetValueAlt rItem) * (Goo1.AuxVarGetFlt "*CraftXP_INI" 2)) + (Goo1.AuxVarGetFlt "*CraftXP_Stat" 1)) 1
+		Goo1.AuxVarSetFlt "*CraftXP_Stat" ((iQuantity * (GetValueAlt rItem) * (Goo1.AuxVarGetFlt "*CraftXP_INI" 3)) + (Goo1.AuxVarGetFlt "*CraftXP_Stat" 1)) 1
 
 	; Category based XP
 	elseif eval fItemsCrafted > 0
 
 		; Vanilla categories
 		if rSubcategory == AidSubRecipes || rSubcategory == ChemsSubRecipes
-			fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 2
-		elseif rSubcategory == AmmoSubRecipes
-			fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 3
-		elseif rSubcategory == BreakdownSubRecipes
 			fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 4
-		elseif rSubcategory == FoodSubRecipes
+		elseif rSubcategory == AmmoSubRecipes
 			fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 5
-		elseif rSubcategory == WeaponSubRecipes
+		elseif rSubcategory == BreakdownSubRecipes
 			fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 6
-		else
+		elseif rSubcategory == FoodSubRecipes
 			fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 7
+		elseif rSubcategory == WeaponSubRecipes
+			fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 8
+		else
+			fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 9
 		endif
 
 		; Mod categories
 		if eval IsModLoaded "Supplemental Ammo Crafting.esp"
-			if rSubcategory == (EditorIDToFormID "PistolAmmoSubRecipes")
-				fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 8
-			elseif rSubcategory == (EditorIDToFormID "RifleAmmoSubRecipes")
-				fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 9
-			elseif rSubcategory == (EditorIDToFormID "ShotgunAmmoSubRecipes")
-				fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 10
+			if rSubcategory == (EditorIDToFormID "PistolAmmoSubRecipes") || rSubcategory == (EditorIDToFormID "RifleAmmoSubRecipes") || rSubcategory == (EditorIDToFormID "ShotgunAmmoSubRecipes")
+				fXPMult = Goo1.AuxVarGetFlt "*CraftXP_INI" 4
 			endif
 		endif
 

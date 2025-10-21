@@ -1,0 +1,168 @@
+{
+	"modName": "CraftingXP",
+	"displayName": "$modDisplayName",
+	"description": "$modDescription",
+	"saveFile": "Stentorious/CraftingXP.ini",
+	"minMCMVersion": 1.00,
+	"minModVersion": 1.00,
+	"requirements": [
+		{ "type": "file", "file": "NVSE/plugins/scripts/gr_CraftingXP.txt" }
+	],
+	"submenus": {
+		"0": {
+			"listTitle": "$modDisplayName",
+			"pageTitle": "$modDisplayName",
+			"active": 1,
+			"columns": 2,
+			"enable": 1,
+			"options": {
+				"1": {
+					"title": "$General",
+					"enable": 1,
+					"type": 0
+				},
+				"3": {
+					"title": "$CalculationMode",
+					"type": 6,
+					"enable": 1,
+					"mouse": "$CalculationModeMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 0, "configINI": "General:iCalculationMode", "default": 1 } ],
+					"textOff" : "$RecipeCategory",
+					"textOn" : "$ItemValue"
+				},
+				"5": {
+					"title": "$ExperienceMin",
+					"type": 2,
+					"enable": 1,
+					"mouse": "$ExperienceMinMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 1, "configINI": "General:iMinimumXP", "default": 0 } ],
+					"suffix": " XP",
+					"scale": {
+						"valueDecimal": 0,
+						"valueIncrement": 1,
+						"valueMin": 0,
+						"valueMax": 10,
+						"suffix": " XP"
+					}
+				},
+				"7": {
+					"title": "$AntiExploit",
+					"type": 5,
+					"enable": 1,
+					"mouse": "$AntiExploitMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 2, "configINI": "General:bAntiExploit", "default": 1 } ]
+				},
+				"2": {
+					"title": "$Multipliers",
+					"enable": 1,
+					"type": 0
+				},
+				"4": {
+					"title": "$ItemValue",
+					"type": 2.5,
+					"state": { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 0, "value": 1, "disable": 1 },
+					"mouse": "$ItemValueMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 3, "configINI": "Multiplier:fItemValue", "default": 0.1 } ],
+					"suffix": "x",
+					"scale": {
+						"valueDecimal": 1,
+						"valueIncrement": 0.1,
+						"valueMin": 0,
+						"valueMax": 10,
+						"suffix": "x"
+					}
+				},
+				"6": {
+					"title": "$Aid",
+					"type": 2.5,
+					"state": { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 0, "value": 0, "disable": 1 },
+					"mouse": "$RecipeCategoryMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 4, "configINI": "Multiplier:fAid", "default": 3 } ],
+					"suffix": "x",
+					"scale": {
+						"valueDecimal": 1,
+						"valueIncrement": 0.1,
+						"valueMin": 0,
+						"valueMax": 10,
+						"suffix": "x"
+					}
+				},
+				"8": {
+					"title": "$Ammo",
+					"type": 2.5,
+					"state": { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 0, "value": 0, "disable": 1 },
+					"mouse": "$RecipeCategoryMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 5, "configINI": "Multiplier:fAmmo", "default": 0.2 } ],
+					"suffix": "x",
+					"scale": {
+						"valueDecimal": 1,
+						"valueIncrement": 0.1,
+						"valueMin": 0,
+						"valueMax": 10,
+						"suffix": "x"
+					}
+				},
+				"10": {
+					"title": "$Breakdown",
+					"type": 2.5,
+					"state": { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 0, "value": 0, "disable": 1 },
+					"mouse": "$RecipeCategoryMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 6, "configINI": "Multiplier:fBreakdown", "default": 0 } ],
+					"suffix": "x",
+					"scale": {
+						"valueDecimal": 1,
+						"valueIncrement": 0.1,
+						"valueMin": 0,
+						"valueMax": 10,
+						"suffix": "x"
+					}
+				},
+				"12": {
+					"title": "$Food",
+					"type": 2.5,
+					"state": { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 0, "value": 0, "disable": 1 },
+					"mouse": "$RecipeCategoryMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 7, "configINI": "Multiplier:fFood", "default": 2 } ],
+					"suffix": "x",
+					"scale": {
+						"valueDecimal": 1,
+						"valueIncrement": 0.1,
+						"valueMin": 0,
+						"valueMax": 10,
+						"suffix": "x"
+					}
+				},
+				"14": {
+					"title": "$Weapon",
+					"type": 2.5,
+					"state": { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 0, "value": 0, "disable": 1 },
+					"mouse": "$RecipeCategoryMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 8, "configINI": "Multiplier:fWeapon", "default": 5 } ],
+					"suffix": "x",
+					"scale": {
+						"valueDecimal": 1,
+						"valueIncrement": 0.1,
+						"valueMin": 0,
+						"valueMax": 10,
+						"suffix": "x"
+					}
+				},
+				"16": {
+					"title": "$Miscellaneous",
+					"type": 2.5,
+					"state": { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 0, "value": 0, "disable": 1 },
+					"mouse": "$RecipeCategoryMouse",
+					"vars": [ { "form": "Goo1", "auxVar": "*CraftXP_INI", "key": 9, "configINI": "Multiplier:fMisc", "default": 1 } ],
+					"suffix": "x",
+					"scale": {
+						"valueDecimal": 1,
+						"valueIncrement": 0.1,
+						"valueMin": 0,
+						"valueMax": 10,
+						"suffix": "x"
+					}
+				}
+			}
+		}
+	}
+}

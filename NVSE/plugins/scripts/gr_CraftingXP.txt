@@ -2,8 +2,8 @@
 
 ; Requirements check
 if eval GetNVSEVersion < 6 || (GetNVSEVersion == 6 && GetNVSERevision < 4)
-   MessageBoxEx "Crafting XP missing requirement!%rInstall xNVSE 6.4.0+."
-   return
+	MessageBoxEx "Crafting XP missing requirement!%rInstall xNVSE 6.4.0+."
+	return
 endif
 if GetPluginVersion "JohnnyGuitarNVSE" < 250
 	MessageBoxEx "Crafting XP missing requirement!%rInstall latest JohnnyGuitar NVSE."
@@ -13,6 +13,23 @@ if GetPluginVersion "ShowOffNVSE Plugin" < 145
 	MessageBoxEx "Crafting XP missing requirement!%rInstall latest ShowOff NVSE plugin."
 	return
 endif
+
+; Load INI settings
+Goo1.AuxVarSetFlt "*CraftXP_INI" (eval GetINIFloat_Cached "General:iCalculationMode" "Stentorious\CraftingXP.ini" 1) 0
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (Flr (GetINIFloat_Cached "General:iMinimumXP" "Stentorious\CraftingXP.ini" 0))) 1
+Goo1.AuxVarSetFlt "*CraftXP_INI" (eval GetINIFloat_Cached "General:bAntiExploit" "Stentorious\CraftingXP.ini" 1) 2
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fItemValue" "Stentorious\CraftingXP.ini" 0.1)) 3
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAid" "Stentorious\CraftingXP.ini" 3)) 4
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAmmo" "Stentorious\CraftingXP.ini" 0.2)) 5
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fBreakdown" "Stentorious\CraftingXP.ini" 0)) 6
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fFood" "Stentorious\CraftingXP.ini" 2)) 7
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fWeapon" "Stentorious\CraftingXP.ini" 5)) 8
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fMisc" "Stentorious\CraftingXP.ini" 1)) 9
+
+; Clear INI cache
+CloseFileSO "Stentorious\CraftingXP.ini" 0
+
+; Update blacklist
 if eval IsModLoaded "DeadMoney.esm"
 	AssignKeyword (EditorIDToFormID "NVDLC01VendingMachineRecipes") "CraftingXPBlacklist"
 endif
@@ -20,69 +37,31 @@ if eval IsModLoaded "TaleOfTwoWastelands.esm"
 	AssignKeyword (EditorIDToFormID "TTWAmmoPressRecipes") "CraftingXPBlacklist"
 endif
 
-; Anti exploit
-if eval GetINIFloat_Cached "General:bAntiExploit" "Stentorious\CraftingXP.ini"
-
-	AssignKeyword RecipeConversionSECtoECP "CraftingXPBlacklist"
-	AssignKeyword RecipeConversionSECtoMFC "CraftingXPBlacklist"
-	AssignKeyword RecipeConversionMFCtoSEC "CraftingXPBlacklist"
-	AssignKeyword RecipeConversionMFCtoECP "CraftingXPBlacklist"
-	AssignKeyword RecipeConversionECPtoSEC "CraftingXPBlacklist"
-	AssignKeyword RecipeConversionECPtoMFC "CraftingXPBlacklist"
-
-	if eval IsModLoaded "LonesomeRoad.esm"
-		AssignKeyword (EditorIDToFormID "RecipeNVDLC04ConversionMissileToRocket") "CraftingXPBlacklist"
-	endif
-	if eval IsModLoaded "Supplemental Ammo Crafting.esp"
-		AssignKeyword (EditorIDToFormID "RecipeBB") "CraftingXPBlacklist"
-		AssignKeyword (EditorIDToFormID "RecipeBreakdownBB") "CraftingXPBlacklist"
-	endif
-	if eval IsModLoaded "JSawyer Ultimate.esp"
-		AssignKeyword (EditorIDToFormID "NVJSawyerTinCanWorkbenchRcp") "CraftingXPBlacklist"
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerThawNukaRcp") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerThawSSRcp") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerBreakdownRepairKitArmorRcp") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerBreakdownRepairKitDummyRcp") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "NVJSawyerBreakdownRepairKitWeaponRcp") 1000
-	endif
-	if eval (IsModLoaded "sawyerbatty.esp" || IsModLoaded "Vigor.esp" || IsModLoaded "Lone Star.esm")
-		AssignKeyword (EditorIDToFormID "JSawyerRecipeTinCan") "CraftingXPBlacklist"
-	endif
-	if eval IsModLoaded "Aid Addon.esp"
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedkitSmallBreakdown") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedkitMediumBreakdown") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedkitLargeBreakdown") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedKitImpBreakdown") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedKitSurvivalBreakdown") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeMedkitUltraBreakdown") 1000
-		SetRecipeRequiredSkillLevel (EditorIDToFormID "RecipeDoctorsBagBreakdown") 1000
-	endif
-
+; Update anti exploit
+AssignKeyword RecipeConversionSECtoECP "CraftingXPExploit"
+AssignKeyword RecipeConversionSECtoMFC "CraftingXPExploit"
+AssignKeyword RecipeConversionMFCtoSEC "CraftingXPExploit"
+AssignKeyword RecipeConversionMFCtoECP "CraftingXPExploit"
+AssignKeyword RecipeConversionECPtoSEC "CraftingXPExploit"
+AssignKeyword RecipeConversionECPtoMFC "CraftingXPExploit"
+if eval IsModLoaded "LonesomeRoad.esm"
+	AssignKeyword (EditorIDToFormID "RecipeNVDLC04ConversionMissileToRocket") "CraftingXPExploit"
 endif
-
-Goo1.AuxVarSetFlt "*CraftXP_INI" (eval GetINIFloat_Cached "General:bValueBasedXP" "Stentorious\CraftingXP.ini") 0
-Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (Floor (GetINIFloat_Cached "General:iMinimumXP" "Stentorious\CraftingXP.ini"))) 1
-if eval Goo1.AuxVarGetFlt "*CraftXP_INI" 0
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "General:fValueBasedXPMul" "Stentorious\CraftingXP.ini")) 2
-else
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAid" "Stentorious\CraftingXP.ini")) 2
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAmmo" "Stentorious\CraftingXP.ini")) 3
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fBreakdown" "Stentorious\CraftingXP.ini")) 4
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fFood" "Stentorious\CraftingXP.ini")) 5
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fWeapon" "Stentorious\CraftingXP.ini")) 6
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fMisc" "Stentorious\CraftingXP.ini")) 7
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "SupplementalAmmoCrafting:fAmmoPistol" "Stentorious\CraftingXP.ini")) 8
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "SupplementalAmmoCrafting:fAmmoRifle" "Stentorious\CraftingXP.ini")) 9
-	Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "SupplementalAmmoCrafting:fAmmoShotgun" "Stentorious\CraftingXP.ini")) 10
+if eval IsModLoaded "Supplemental Ammo Crafting.esp"
+	AssignKeyword (EditorIDToFormID "RecipeBB") "CraftingXPExploit"
+	AssignKeyword (EditorIDToFormID "RecipeBreakdownBB") "CraftingXPExploit"
 endif
-
-; Clear INI cache
-CloseFileSO "Stentorious\CraftingXP.ini" 0
+if eval (IsModLoaded "sawyerbatty.esp" || IsModLoaded "Vigor.esp" || IsModLoaded "Lone Star.esm")
+	AssignKeyword (EditorIDToFormID "JSawyerRecipeTinCan") "CraftingXPExploit"
+endif
+if eval IsModLoaded "JSawyer Ultimate.esp"
+	AssignKeyword (EditorIDToFormID "NVJSawyerTinCanWorkbenchRcp") "CraftingXPExploit"
+endif
 
 ; Event handlers
 SetOnCraftingEventHandler (CompileScript "CraftingXP/Main.gek") 1
 SetOnMenuOpenEventHandler (begin function {int iMenuID}
-	if eval GetActiveMenuMode != iMenuID
+	if eval GetActiveMenuMode != 1077
 		return
 	endif
 	Goo1.AuxVarSetFlt "*CraftXP_Stat" (GetPCMiscStat "Items Crafted") 0
@@ -93,3 +72,15 @@ SetOnMenuCloseEventHandler (begin function {int iMenuID}
 		RewardXP (GetMaxOf (Goo1.AuxVarGetFlt "*CraftXP_INI" 1) (Flr ((Goo1.AuxVarGetFlt "*CraftXP_Stat" 1) + 0.5)))
 	endif
 end) 1 1077
+
+; Disable recipes
+if eval IsModLoaded "JSawyer Ultimate.esp" == 0 && IsModLoaded "Aid Addon.esp" == 0
+	return
+endif
+Call (CompileScript "CraftingXP/UpdateAntiExploit.gek")
+SetEventHandler "MCMExtUpdate" (begin Function {array_var aTemp}
+	if eval (Ar_Find "CraftingXP" aTemp) != Ar_BadNumericIndex
+		Call (CompileScript "CraftingXP\UpdateAntiExploit.gek")
+	endif
+	aTemp = ar_Null
+end)
