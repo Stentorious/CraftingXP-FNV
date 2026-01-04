@@ -18,13 +18,13 @@ endif
 Goo1.AuxVarSetFlt "*CraftXP_INI" (eval GetINIFloat_Cached "General:iCalculationMode" "Stentorious\CraftingXP.ini" 1) 0
 Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (Flr (GetINIFloat_Cached "General:iMinimumXP" "Stentorious\CraftingXP.ini" 0))) 1
 Goo1.AuxVarSetFlt "*CraftXP_INI" (eval GetINIFloat_Cached "General:bAntiExploit" "Stentorious\CraftingXP.ini" 1) 2
-Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fItemValue" "Stentorious\CraftingXP.ini" 0.1)) 3
-Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAid" "Stentorious\CraftingXP.ini" 3)) 4
-Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fAmmo" "Stentorious\CraftingXP.ini" 0.2)) 5
-Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fBreakdown" "Stentorious\CraftingXP.ini" 0)) 6
-Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fFood" "Stentorious\CraftingXP.ini" 2)) 7
-Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fWeapon" "Stentorious\CraftingXP.ini" 5)) 8
-Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Crafting:fMisc" "Stentorious\CraftingXP.ini" 1)) 9
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Multiplier:fItemValue" "Stentorious\CraftingXP.ini" 0.1)) 3
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Multiplier:fAid" "Stentorious\CraftingXP.ini" 3)) 4
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Multiplier:fAmmo" "Stentorious\CraftingXP.ini" 0.2)) 5
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Multiplier:fBreakdown" "Stentorious\CraftingXP.ini" 0)) 6
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Multiplier:fFood" "Stentorious\CraftingXP.ini" 2)) 7
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Multiplier:fWeapon" "Stentorious\CraftingXP.ini" 5)) 8
+Goo1.AuxVarSetFlt "*CraftXP_INI" (GetMaxOf 0 (GetINIFloat_Cached "Multiplier:fMisc" "Stentorious\CraftingXP.ini" 1)) 9
 
 ; Clear INI cache
 CloseFileSO "Stentorious\CraftingXP.ini" 0
